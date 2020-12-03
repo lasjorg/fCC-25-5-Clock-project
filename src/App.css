@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  height: 100vh;
+  padding: 2rem;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1.2rem, 2vw, 5rem);
+  min-width: 320px;
+}
+
+button {
+  padding: 0.6em 3em;
+  padding: 0.5rem 2rem;
+}
+
+.clock {
+  font-size: clamp(2.5rem, 8vw, 8rem);
+  max-width: 30vw;
+  min-width: 200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.CircularProgressbar {
+  background: radial-gradient(circle at 50%, #da1d1d, black, white, white);
+  background: radial-gradient(circle at 50%, #e91e1e, #b02727, white, white);
+}
+
+.clock-content {
+  font-size: 0.6em;
+  color: white;
+  text-align: center;
+  position: relative;
+  top: -10%;
+}
+
+.btn-clock {
+  position: relative;
+  font-size: 0.2em;
+  padding: 0.5em 1.5em;
+  background: transparent;
+  border: none;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 8px 2px white;
+}
+
+.btn-start-stop {
+  top: -15%;
+}
+
+.btn-reset {
+  top: -5%;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
