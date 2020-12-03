@@ -1,7 +1,6 @@
 import './App.css';
 import React from 'react';
 import {
-  CircularProgressbar,
   CircularProgressbarWithChildren,
   buildStyles,
 } from 'react-circular-progressbar';
@@ -107,32 +106,61 @@ function App() {
     return true;
   };
 
-  const handleIncrementBreak = () => {
+  const validKeyEvent = (event) => {
+    const { key } = event;
+    return key === 'ArrowUp' || key === 'ArrowDown';
+  };
+
+  const handleIncrementBreak = (event) => {
     if (isRunning) return;
+
+    if (event.type === 'keydown') {
+      if (!validKeyEvent(event)) {
+        return;
+      }
+    }
 
     if (inRange(breakTime + 1)) {
       setBreakTime((state) => ++state);
     }
   };
 
-  const handleDecrementBreak = () => {
+  const handleDecrementBreak = (event) => {
     if (isRunning) return;
+
+    if (event.type === 'keydown') {
+      if (!validKeyEvent(event)) {
+        return;
+      }
+    }
 
     if (inRange(breakTime - 1)) {
       setBreakTime((state) => --state);
     }
   };
 
-  const handleIncrementSession = () => {
+  const handleIncrementSession = (event) => {
     if (isRunning) return;
+
+    if (event.type === 'keydown') {
+      if (!validKeyEvent(event)) {
+        return;
+      }
+    }
 
     if (inRange(sessionTime + 1)) {
       setSessionTime((state) => ++state);
     }
   };
 
-  const handleDecrementSession = () => {
+  const handleDecrementSession = (event) => {
     if (isRunning) return;
+
+    if (event.type === 'keydown') {
+      if (!validKeyEvent(event)) {
+        return;
+      }
+    }
 
     if (inRange(sessionTime - 1)) {
       setSessionTime((state) => --state);
@@ -141,35 +169,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="time-controls">
-        <div className="break-controls">
-          <p id="break-label">Break Length</p>
-          <button id="break-increment" onClick={handleIncrementBreak}>
-            <i className="fas fa-arrow-up"></i>
-          </button>
-          <p id="break-length">{breakTime}</p>
-          <button id="break-decrement" onClick={handleDecrementBreak}>
-            <i className="fas fa-arrow-down"></i>
-          </button>
-        </div>
-
-        <div className="session-controls">
-          <p id="session-label">Session Length</p>
-          <button id="session-increment" onClick={handleIncrementSession}>
-            <i className="fas fa-arrow-up"></i>
-          </button>
-          <p id="session-length">{sessionTime}</p>
-          <button id="session-decrement" onClick={handleDecrementSession}>
-            <i className="fas fa-arrow-down"></i>
-          </button>
-        </div>
-      </div>
       <div className="clock">
-        {isSession ? (
-          <p id="timer-label">Session</p>
-        ) : (
-          <p id="timer-label">Break</p>
-        )}
         <CircularProgressbarWithChildren
           id="time-left"
           value={Math.ceil(time / 60)}
@@ -180,13 +180,24 @@ function App() {
             strokeLinecap: 'butt',
             // How long animation takes to go from one percentage to another, in seconds
             pathTransitionDuration: 0.5,
-            pathColor: `rgb(62, 152, 199)`,
+            pathColor: `var(--red)`,
             trailColor: '#d6d6d6',
             backgroundColor: '#3e98c7',
           })}
         >
+          <div className="clock-content">
+            {isSession ? (
+              <p id="timer-label">Session</p>
+            ) : (
+              <p id="timer-label">Break</p>
+            )}
+            <p id="time-left">{formatTime(time)}</p>
+          </div>
+        </CircularProgressbarWithChildren>
+
+        <div className="clock-control-container">
           <button
-            class="btn-clock btn-start-stop"
+            className="clock-button clock-button--red"
             id="start_stop"
             onClick={() => setIsRunning((state) => !state)}
           >
@@ -196,24 +207,73 @@ function App() {
               <i className="fas fa-play"></i>
             )}
           </button>
-          <p className="clock-content" id="time-left">
-            {formatTime(time)}
-          </p>
           <button
-            class="btn-clock btn-reset"
+            className="clock-button clock-button--red"
             id="reset"
             onClick={handleResetTime}
           >
             <i className="fas fa-sync"></i>
           </button>
-        </CircularProgressbarWithChildren>
+        </div>
+
+        <div className="time-control-container">
+          <div className="time-control mr2">
+            <p className="time-control-label" id="break-label">
+              Break Length
+            </p>
+            <button
+              className="clock-button clock-button--green"
+              id="break-increment"
+              onClick={handleIncrementBreak}
+              onKeyDown={handleIncrementBreak}
+            >
+              <i className="fas fa-arrow-up"></i>
+            </button>
+            <p id="break-length">{breakTime}</p>
+            <button
+              className="clock-button clock-button--green"
+              id="break-decrement"
+              onClick={handleDecrementBreak}
+              onKeyDown={handleDecrementBreak}
+            >
+              <i className="fas fa-arrow-down"></i>
+            </button>
+          </div>
+
+          <div className="time-control">
+            <p className="time-control-label" id="session-label">
+              Session Length
+            </p>
+            <button
+              className="clock-button clock-button--green"
+              id="session-increment"
+              onClick={handleIncrementSession}
+              onKeyDown={handleIncrementSession}
+            >
+              <i className="fas fa-arrow-up"></i>
+            </button>
+            <p id="session-length">{sessionTime}</p>
+            <button
+              className="clock-button clock-button--green"
+              id="session-decrement"
+              onClick={handleDecrementSession}
+              onKeyDown={handleDecrementSession}
+            >
+              <i className="fas fa-arrow-down"></i>
+            </button>
+          </div>
+        </div>
       </div>
+
       <audio
         id="beep"
         preload="auto"
         ref={audioElement}
         src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
       />
+      <footer className="footer">
+        <p>Made by &#64;lasjorg</p>
+      </footer>
     </div>
   );
 }
