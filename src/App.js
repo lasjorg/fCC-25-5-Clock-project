@@ -5,6 +5,9 @@ import {
   buildStyles,
 } from 'react-circular-progressbar';
 
+import { inRange } from './utils/inRange.js';
+import { formatTime } from './utils/formatTime.js';
+
 let intervalID;
 let playPromise;
 
@@ -22,7 +25,7 @@ function App() {
   const runTime = React.useCallback(() => {
     const id = setInterval(() => {
       if (isRunning) {
-        setTime((time) => --time);
+        setTime((time) => time - 1);
       }
     }, 1000);
 
@@ -65,13 +68,6 @@ function App() {
   //   console.log({ time });
   // }, [breakTime, sessionTime, isRunning, isSession, time]);
 
-  const formatTime = (time) => {
-    // 3600 === 60 === 1 hour === 01:00:00 and not 00:60:00
-    if (time === 3600) return '60:00';
-
-    return new Date(time * 1000).toISOString().substr(14, 5);
-  };
-
   const handleResetTime = () => {
     // https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
     // weird fix for test causing the browser to throw an error on .pause()
@@ -99,13 +95,6 @@ function App() {
     setIsRunning(false);
   };
 
-  const inRange = (number) => {
-    if (number > 60 || number === 0) {
-      return false;
-    }
-    return true;
-  };
-
   const validKeyEvent = (event) => {
     const { key } = event;
     return key === 'ArrowUp' || key === 'ArrowDown';
@@ -121,7 +110,7 @@ function App() {
     }
 
     if (inRange(breakTime + 1)) {
-      setBreakTime((state) => ++state);
+      setBreakTime((time) => time + 1);
     }
   };
 
@@ -135,7 +124,7 @@ function App() {
     }
 
     if (inRange(breakTime - 1)) {
-      setBreakTime((state) => --state);
+      setBreakTime((time) => time - 1);
     }
   };
 
@@ -149,7 +138,7 @@ function App() {
     }
 
     if (inRange(sessionTime + 1)) {
-      setSessionTime((state) => ++state);
+      setSessionTime((time) => time + 1);
     }
   };
 
@@ -163,7 +152,7 @@ function App() {
     }
 
     if (inRange(sessionTime - 1)) {
-      setSessionTime((state) => --state);
+      setSessionTime((time) => time - 1);
     }
   };
 
